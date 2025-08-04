@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FVG Retaguarda</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="script.js"></script>
+</head>
+
+<body>
+  <h2 id="TituloCadastro">Cadastro de Produtos</h2>
+  <form name="Cadastros" id="Cadastros">
+    <label for="nomeProduto">Nome:* </label>
+    <input type="text" id="nomeProduto" name="nomeProduto" required placeholder="Digite o nome do produto"><br>
+    <label for="preco">Preço:* </label>
+    <input type="text" id="preco" name="preco" required placeholder="Utilize o formato '00.00' somente"><br>
+    <label for="descricao">Descrição: </label>
+    <input type="text" id="descricao" name="descricao" placeholder="Digite a descrição do produto">
+    <h5>[Campos com * precisam ser preenchidos obrigatoriamente]</h5>
+  
+    <h3>Categorias</h3>
+    <input type="checkbox" id="suprimentos" name="suprimentos" value="suprimentos">
+    <label for="suprimentos">Suprimentos</label><br>
+    <input type="checkbox" id="equipamento" name="equipamento" value="equipamento">
+    <label for="equipamento">Equipamento</label><br>
+    <input type="checkbox" id="etiquetas" name="etiquetas" value="etiquetas">
+    <label for="etiquetas">Etiquetas</label><br>
+  
+    <h3>Subcategorias</h3>
+    <input type="checkbox" id="mercado" name="mercado" value="mercado">
+    <label for="mercado">Mercado</label><br>
+    <input type="checkbox" id="padaria" name="padaria" value="padaria">
+    <label for="padaria">Padaria</label><br>
+    <input type="checkbox" id="restaurante" name="restaurante" value="restaurante">
+    <label for="restaurante">Restaurante</label><br>
+    <input type="checkbox" id="conveniencia" name="conveniencia" value="conveniencia">
+    <label for="conveniencia">Conveniência</label><br>
+    <input type="checkbox" id="acougue" name="acougue" value="acougue">
+    <label for="acougue">Açougue</label><br>
+    <input type="checkbox" id="verdureira" name="verdureira" value="verdureira">
+    <label for="verdureira">Verdureira</label><br>
+
+    <label for="imagemURL">Link da imagem (Google Drive):</label>
+    <input type="text" id="imagemURL" name="imagemURL" placeholder="Cole o link aqui"><br>
+
+    <button type="submit">Salvar</button><br>
+
+
+  </form>
+
+</body>
+
+</html>
