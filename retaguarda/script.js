@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebas
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // configuraçao do Firebase ---------------------------
+// configuração de segurança é feita diretamente no bd > regras
 const firebaseConfig = {
   apiKey: "AIzaSyBg-TYQ9hQ_l_tDAMjOkmWn-WZhtNpa_oE",
   authDomain: "site-fgv.firebaseapp.com",
