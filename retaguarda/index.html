@@ -13,7 +13,7 @@
     #tela-login {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: #0c3d15; display: flex; align-items: center; justify-content: center; z-index: 1000;
-        padding: 20px; box-sizing: border-box; /* Garante que não estoure em telas pequenas */
+        padding: 20px; box-sizing: border-box;
     }
     .login-box { 
         background: white; padding: 40px; border-radius: 10px; width: 100%; max-width: 400px; 
@@ -21,10 +21,9 @@
     }
     .login-box h2 { color: #0c3d15; margin-bottom: 20px; }
     .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-    
     .login-box button { 
         width: 100%; padding: 12px; 
-        background-color: oklch(55.4% 0.135 66.442); /* Cor Laranja Solicitada */
+        background-color: oklch(55.4% 0.135 66.442);
         color: white; border: none; border-radius: 5px; 
         cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; 
         transition: opacity 0.2s;
@@ -40,53 +39,55 @@
     .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 
     form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
-    input[type=text], input[type=number] { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    input[type=text], input[type=number] { width: 100%; padding: 12px; margin: 5px 0 15px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
     
     .grupo-categoria { border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #fff; }
-    .cabecalho-categoria { display: flex; align-items: center; font-weight: bold; color: #0c3d15; font-size: 1.1em; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #eee; }
-    .cabecalho-categoria input { width: 20px; height: 20px; margin-right: 10px; cursor: pointer; }
+    .cabecalho-categoria { display: flex; align-items: center; font-weight: bold; color: #0c3d15; font-size: 1.1em; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid #eee; cursor: pointer; }
+    .cabecalho-categoria input { width: 24px; height: 24px; margin-right: 15px; cursor: pointer; }
+    .cabecalho-categoria label { flex: 1; padding: 5px 0; cursor: pointer; }
     
-    .lista-subcategorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; padding-left: 10px; }
-    .item-sub { display: flex; align-items: center; font-size: 0.95em; color: #4b5563; }
-    .item-sub input { width: 16px; height: 16px; margin-right: 8px; cursor: pointer; }
-    .item-sub label { cursor: pointer; }
+    .lista-subcategorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .item-sub { display: flex; align-items: center; font-size: 1em; color: #4b5563; padding: 10px; background-color: #f9fafb; border-radius: 6px; border: 1px solid #eee; cursor: pointer; }
+    .item-sub:hover { background-color: #f0fdf4; border-color: #bbf7d0; }
+    .item-sub input { width: 22px; height: 22px; margin-right: 12px; cursor: pointer; flex-shrink: 0; }
+    .item-sub label { cursor: pointer; width: 100%; user-select: none; }
 
-    .table-container { max-width: 800px; margin: 40px auto; overflow-x: auto; } /* Ajustado para 800px para alinhar com form */
-    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 600px; } /* Min-width garante scroll no celular */
-    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-    th { background-color: #0c3d15; color: white; }
-    tr:hover { background-color: #f5f5f5; }
-    
-    .btn-action { padding: 6px 12px; cursor: pointer; border: none; border-radius: 4px; color: white; margin-right: 5px; font-size: 0.9em; }
-    .btn-edit { background-color: #eab308; }
-    .btn-delete { background-color: #ef4444; }
-    
-    .promo-box { background-color: #fee2e2; border: 2px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 8px; display: flex; align-items: center; }
-    .promo-box input { width: 25px; height: 25px; margin-right: 15px; cursor: pointer; }
+    .promo-box { background-color: #fee2e2; border: 2px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 8px; display: flex; align-items: center; cursor: pointer; }
+    .promo-box input { width: 25px; height: 25px; margin-right: 15px; cursor: pointer; flex-shrink: 0; }
+    .promo-box label { cursor: pointer; width: 100%; }
     
     .btn-cancelar { background-color: #6b7280; display: none; margin-left: 10px; }
 
+    .table-container { max-width: 800px; margin: 40px auto; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 700px; } /* Garante largura mínima para não espremer */
+    
+    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
+    th { background-color: #0c3d15; color: white; }
+    tr:hover { background-color: #f5f5f5; }
+
+    .col-acoes { width: 160px; min-width: 160px; text-align: center; } /* Largura fixa */
+    
+    .acoes-wrapper {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-action { 
+        padding: 8px 12px; cursor: pointer; border: none; border-radius: 4px; color: white; font-size: 0.9em; 
+        flex: 1;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .btn-edit { background-color: #eab308; }
+    .btn-delete { background-color: #ef4444; }
+
     @media (max-width: 768px) {
         body { padding: 10px; }
-        
-        .header-painel { 
-            flex-direction: column; 
-            align-items: flex-start; 
-            gap: 15px; 
-        }
-        
-        .header-painel button { 
-            width: 100%; 
-        }
-
-        .lista-subcategorias { 
-            grid-template-columns: 1fr;
-        }
-
+        .header-painel { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .header-painel button { width: 100%; padding: 12px; font-size: 16px; }
+        .lista-subcategorias { grid-template-columns: 1fr; }
         form { padding: 15px; }
-        
-        th, td { padding: 8px; font-size: 14px; }
-        .btn-action { padding: 5px 8px; margin-bottom: 5px; display: inline-block; }
+        .btn-action { padding: 10px; font-size: 14px; }
     }
   </style>
   
@@ -107,7 +108,7 @@
   <div id="conteudo-restrito">
       
       <div class="header-painel">
-          <h2 style="color: #0c3d15; margin: 0; font-size: 1.5em;">Retaguarda/Cadastros de produtos FVG</h2>
+          <h2 style="color: #0c3d15; margin: 0; font-size: 1.3em;">Retaguarda/Cadastros de produtos FVG</h2>
           <button id="btnSair" class="btn-logout">Sair (Logout)</button>
       </div>
       
@@ -124,12 +125,16 @@
           <label for="descricao"><strong>Descrição:</strong></label>
           <input type="text" id="descricao" name="descricao" placeholder="Detalhes do produto...">
           
-          <label for="imagemURL"><strong>Link Da Imagem (Google Drive/Imgur):</strong></label>
-          <input type="text" id="imagemURL" name="imagemURL" placeholder="Cole o link da imagem aqui">
+          <label for="imagemInput"><strong>Foto do Produto:</strong></label>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+              <input type="file" id="imagemInput" accept="image/*" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; width: 100%; background: #fff;">
+              <img id="previewImagem" src="" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; display: none; border: 1px solid #ddd;">
+          </div>
+          <input type="hidden" id="urlImagemSalva">
 
           <div class="promo-box">
             <input type="checkbox" id="emPromocao" name="emPromocao">
-            <label for="emPromocao" style="font-weight: bold; color: #b91c1c; font-size: 1.1em; cursor: pointer;">
+            <label for="emPromocao" style="font-weight: bold; color: #b91c1c; font-size: 1.1em;">
                 Produto em promoção <br>
                 <small style="font-weight: normal; color: #000; font-size: 0.8em;">(Se marcar, ele aparecerá na seção de Ofertas do site)</small>
             </label>
@@ -140,8 +145,8 @@
           <div id="container-checkboxes"></div>
           
           <div style="margin-top: 30px; text-align: center;">
-              <button type="submit" id="btnSalvar" style="padding: 12px 30px; background: #0c3d15; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; width: 100%; max-width: 250px;">Salvar Produto</button>
-              <button type="button" id="btnCancelar" class="btn-cancelar" style="padding: 12px 30px; border: none; cursor: pointer; color: white; font-size: 16px; border-radius: 5px; width: 100%; max-width: 250px; margin-top: 10px;">Cancelar Edição</button>
+              <button type="submit" id="btnSalvar" style="padding: 15px 30px; background: #0c3d15; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; width: 100%; max-width: 300px;">Salvar Produto</button>
+              <button type="button" id="btnCancelar" class="btn-cancelar" style="padding: 15px 30px; border: none; cursor: pointer; color: white; font-size: 16px; border-radius: 5px; width: 100%; max-width: 300px; margin-top: 10px;">Cancelar Edição</button>
           </div>
         </form>
       </div>
@@ -151,12 +156,11 @@
           <table id="tabelaProdutos">
               <thead>
                   <tr>
-                      <th style="width: 30%;">Nome</th>
+                      <th>Nome</th>
                       <th>Preço</th>
-                      <th style="width: 30%;">Categorias</th>
+                      <th>Categorias</th>
                       <th>Promoção</th>
-                      <th>Ações</th>
-                  </tr>
+                      <th class="col-acoes">Ações</th> </tr>
               </thead>
               <tbody></tbody>
           </table>

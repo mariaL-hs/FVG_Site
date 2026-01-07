@@ -3,63 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FVG</title>
+    <title>FVG Suprimentos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .dropdown-menu { display: none; }
+        .group:hover .dropdown-menu { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+    </style>
 </head>
-<body>
-    <!-- nav bar -->
-     <nav class="bg-[oklch(40.5%_0.101_131.063)] text-white">
-  <div class="max-w-7x1 mx-auto flex flex-wrap items-center justify-between px-4 py-3">
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
-    <!-- Logo -->
-    <div class="flex-shrink-0">
-      <span class="text-base font-semibold ali">FGV Suprimentos<span class="text-[oklch(55.4%_0.135_66.442)]"> & </span><span>Equipamentos</span>
-    </div>
+    <nav class="bg-[oklch(40.5%_0.101_131.063)] text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-3 gap-3 md:gap-0">
+            
+            <div class="flex-shrink-0 cursor-pointer" onclick="voltarParaHome()">
+                <span class="text-xl font-bold mr-2">FVG Suprimentos<span class="text-[oklch(55.4%_0.135_66.442)]"> & </span><span>Equipamentos</span></span>
+            </div>
 
-    <!-- Links superiores -->
-    <div class="hidden md:flex items-center space-x-6 text-sm">
-      <a href="#" class="hover:underline p-5">Meus pedidos</a>
-    </div>
+            <div class="hidden md:flex items-center space-x-6 text-sm ml-3">
+                <a href="#" class="hover:text-green-200 transition">Meus pedidos</a>
+            </div>
 
-    <!-- Barra de busca -->
-    <div class="flex-1 mx-4">
-      <div class="flex bg-white rounded-md overflow-hidden">
-        <input type="text" placeholder="O que o seu estabelecimento precisa?" class="flex-1 px-3 py-2 text-gray-700 outline-none">
-        <!-- <button class="bg-gray-100 px-4"><i class="fas fa-search text-black-600"></i></button> -->
-      </div>
-    </div>
+            <div class="w-full md:flex-1 md:mx-4">
+                <div class="flex bg-white rounded-md overflow-hidden shadow-sm">
+                    <input type="text" id="barra-pesquisa" placeholder="O que você precisa?" class="flex-1 px-3 py-2 text-gray-700 outline-none w-full">
+                    <button class="bg-gray-100 px-4 hover:bg-gray-200 text-gray-600"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
 
-    <!-- Ações -->
-    <div class="flex items-center space-x-6 text-sm">
-      <a href="#" class="flex items-center space-x-1 hover:underline">
-        <i class="fab fa-whatsapp text-green-400"></i>
-        <span>Compre pelo <b>WhatsApp</b></span>
-      </a>
-      <a href="#" class="hover:underline">Cadastre-se</a>
-      <div class="relative">
-        <i class="fas fa-shopping-cart text-xl"></i>
-        <!-- <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">0</span> -->
-      </div>
-    </div>
-  </div>
+            <div class="w-full md:w-auto flex items-center justify-evenly md:justify-end md:space-x-6 text-sm md:ml-2">
+                
+                <a href="https://wa.me/5547984252056?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20FVG." target="_blank" class="flex items-center text-white hover:text-green-200 transition gap-2">
+                    <i class="fab fa-whatsapp text-2xl"></i> 
+                    <span class="font-medium text-lg">WhatsApp</span>
+                </a>
 
-  <!-- Menu de categorias -->
-  <div class="bg-gray-100 text-gray-700 text-sm">
-    <div class="max-w-7xl mx-auto flex items-center space-x-8 px-5 py-2">
-      <button class="font-semibold">Navegar por Categoria ▾</button>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Supermercados</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Açougues</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Padarias</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Lanchonetes</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Restaurantes</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Suprimentos</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Bobinas</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Sacolas</a>
-      <a href="#" class="hover:text-[oklch(40.5%_0.101_131.063)]">Utensílios</a>
-      <a href="#" class="bg-red-600 text-white px-3 py-1 rounded">Promoções</a>
-    </div>
-  </div>
-</nav>
+                <div class="relative cursor-pointer hover:text-gray-200">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                </div>
+            </div>
+        </div>
 
+        <div class="bg-white text-gray-700 text-sm shadow-sm relative group-nav border-b border-gray-200">
+            <div class="relative h-12"> 
+                
+                <button id="nav-scroll-left" class="absolute left-0 top-0 bottom-0 w-10 bg-white hover:bg-gray-100 flex items-center justify-center z-10 text-gray-600 hidden md:flex cursor-pointer border-r border-gray-100">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+
+                <div id="navbar-categorias" class="flex items-center overflow-x-auto scrollbar-hide h-full space-x-0 mx-4 md:mx-10">
+                    </div>
+
+                <button id="nav-scroll-right" class="absolute right-0 top-0 bottom-0 w-10 bg-white hover:bg-gray-100 flex items-center justify-center z-10 text-gray-600 hidden md:flex cursor-pointer border-l border-gray-100">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow">
+        
+        <div id="view-home" class="block animate-fade-in">
+            <section class="max-w-7xl mx-auto px-4 py-8 relative group">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-green-600 pl-3">Produtos</h2>
+                
+                <button id="carousel-scroll-left" class="absolute left-0 top-1/2 mt-4 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg z-10 hover:bg-white text-gray-700 hidden md:block hover:scale-110 transition">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+
+                <div id="carousel-categorias" class="flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth py-4 px-1">
+                    </div>
+
+                <button id="carousel-scroll-right" class="absolute right-0 top-1/2 mt-4 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg z-10 hover:bg-white text-gray-700 hidden md:block hover:scale-110 transition">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </section>
+
+            <section class="max-w-7xl mx-auto px-4 pb-12 pt-4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-red-600 pl-3 flex items-center">
+                    Promoções e Ofertas
+                </h2>
+                
+                <div id="lista-home-promocoes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="col-span-full text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> Carregando ofertas...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-loja" class="hidden max-w-7xl mx-auto px-4 py-8 animate-fade-in">
+            <div class="flex flex-col md:flex-row gap-8">
+                
+                <aside class="w-full md:w-64 flex-shrink-0">
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 sticky top-36">
+                        <button onclick="voltarParaHome()" class="md:hidden mb-4 text-sm text-gray-500 hover:text-green-600 flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Voltar para Home
+                        </button>
+                        <h3 id="titulo-sidebar" class="font-bold text-xl mb-4 text-green-800 uppercase border-b pb-2">Categoria</h3>
+                        <h4 class="font-semibold text-sm text-gray-500 mb-3 uppercase mt-4">Filtrar por:</h4>
+                        <div id="lista-subcategorias" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                            </div>
+                    </div>
+                </aside>
+
+                <div class="flex-1">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="titulo-secao-produtos" class="text-2xl font-bold text-gray-800">Produtos</h2>
+                        <span id="contador-produtos" class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Carregando...</span>
+                    </div>
+                    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-[oklch(40.5%_0.101_131.063)] text-gray-300 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">FVG Suprimentos</h4>
+                <p class="text-gray-300 text-sm font-semibold">Fabiana Valério Gonçalves da Rosa</p>
+                <p class="text-xs mt-2 leading-relaxed">Região de Joinville, Itajuba, Itajaí,<br>Navegantes, Balneário Camburiú...</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Contato</h4>
+                <p class="mt-2"><i class="fas fa-phone mr-2"></i> (47) 98425-2056</p>
+                <p><i class="fas fa-envelope mr-2"></i> fabimaria.luiza@gmail.com</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Redes Sociais</h4>
+                <div class="flex justify-center md:justify-start space-x-6 text-2xl">
+                    <i class="fab fa-instagram cursor-pointer hover:text-pink-400 transition"></i>
+                    <i class="fab fa-facebook cursor-pointer hover:text-blue-400 transition"></i>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-xs text-gray-500 mt-10 border-t border-gray-600 pt-4">
+            © 2026 FVG. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script type="module" src="main.js"></script>
 </body>
 </html>

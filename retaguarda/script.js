@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBg-TYQ9hQ_l_tDAMjOkmWn-WZhtNpa_oE",
@@ -15,8 +16,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
-// --- Dados ---
+// --- DADOS ---
 const dadosCategorias = {
     "Bobina": ["Bobina Térmica", "Bobina Plástica", "Bobina Oferta"],
     "Etiqueta": ["Etiqueta De Balança", "Personalizada", "Neutra", "Mx", "Gôndola", "Etiquetadora", "Etiqueta De Impressora", "Couché", "Etiqueta E Rótulo Personalizado"],
@@ -38,6 +40,9 @@ const editIdInput = document.getElementById("editId");
 const btnSalvar = document.getElementById("btnSalvar");
 const btnCancelar = document.getElementById("btnCancelar");
 const containerCheckboxes = document.getElementById("container-checkboxes");
+const imagemInput = document.getElementById("imagemInput");
+const urlImagemSalva = document.getElementById("urlImagemSalva");
+const previewImagem = document.getElementById("previewImagem");
 
 const telaLogin = document.getElementById("tela-login");
 const conteudoRestrito = document.getElementById("conteudo-restrito");
@@ -46,7 +51,7 @@ const btnSair = document.getElementById("btnSair");
 const loginEmail = document.getElementById("loginEmail");
 const loginSenha = document.getElementById("loginSenha");
 
-// --- Login ---
+// --- 1. LOGIN ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
         telaLogin.style.display = "none";
@@ -80,7 +85,7 @@ btnSair.addEventListener("click", () => {
     signOut(auth).then(() => window.location.reload());
 });
 
-// --- Gestao ---
+// --- 2. GESTÃO ---
 function gerarFormularioCategorias() {
     containerCheckboxes.innerHTML = "";
     Object.keys(dadosCategorias).forEach(cat => {
@@ -119,8 +124,6 @@ function carregarProdutos() {
         tabelaBody.innerHTML = "";
         const produtos = [];
         snapshot.forEach((doc) => produtos.push({ ...doc.data(), id: doc.id }));
-        
-        // ordena para mostrar os últimos cadastrados primeiro
         produtos.reverse();
 
         produtos.forEach((produto) => {
@@ -132,15 +135,23 @@ function carregarProdutos() {
 
             const preco = parseFloat(produto.preco).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
             const catsDisplay = [...(produto.categorias || []), ...(produto.subcategorias || [])].join(", ");
+            const thumb = produto.imagemURL ? `<img src="${produto.imagemURL}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">` : '';
 
             tr.innerHTML = `
-                <td><strong>${produto.nome}</strong></td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        ${thumb}
+                        <strong>${produto.nome}</strong>
+                    </div>
+                </td>
                 <td>${preco}</td>
                 <td><small>${catsDisplay}</small></td>
                 <td style="text-align:center;">${textoPromo}</td>
-                <td>
-                    <button class="btn-action btn-edit" data-id="${produto.id}">Editar</button>
-                    <button class="btn-action btn-delete" data-id="${produto.id}">Excluir</button>
+                <td class="col-acoes">
+                    <div class="acoes-wrapper">
+                        <button class="btn-action btn-edit" data-id="${produto.id}">Editar</button>
+                        <button class="btn-action btn-delete" data-id="${produto.id}">Excluir</button>
+                    </div>
                 </td>
             `;
             tabelaBody.appendChild(tr);
@@ -159,29 +170,37 @@ form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!auth.currentUser) return;
 
-    // evitar clique duplo
     const btnOriginalText = btnSalvar.textContent;
     btnSalvar.textContent = "Salvando...";
     btnSalvar.disabled = true;
 
-    const nome = document.getElementById("nomeProduto").value;
-    const preco = parseFloat(document.getElementById("preco").value);
-    const descricao = document.getElementById("descricao").value;
-    const imagemURL = document.getElementById("imagemURL").value;
-    const emPromocao = document.getElementById("emPromocao").checked;
-    
-    const categorias = [];
-    document.querySelectorAll(".cat-check:checked").forEach(cb => categorias.push(cb.value));
-    
-    const subcategorias = [];
-    document.querySelectorAll(".sub-check:checked").forEach(cb => subcategorias.push(cb.value));
-
-    const produtoData = {
-        nome, preco, descricao, imagemURL, emPromocao, 
-        categorias, subcategorias, atualizadoEm: new Date()
-    };
-
     try {
+        const nome = document.getElementById("nomeProduto").value;
+        const preco = parseFloat(document.getElementById("preco").value);
+        const descricao = document.getElementById("descricao").value;
+        const emPromocao = document.getElementById("emPromocao").checked;
+        
+        let urlFinal = urlImagemSalva.value;
+        const arquivo = imagemInput.files[0];
+
+        if (arquivo) {
+            btnSalvar.textContent = "Subindo foto...";
+            const nomeArquivo = `produtos/${Date.now()}_${arquivo.name}`;
+            const storageRef = ref(storage, nomeArquivo);
+            await uploadBytes(storageRef, arquivo);
+            urlFinal = await getDownloadURL(storageRef);
+        }
+
+        const categorias = [];
+        document.querySelectorAll(".cat-check:checked").forEach(cb => categorias.push(cb.value));
+        const subcategorias = [];
+        document.querySelectorAll(".sub-check:checked").forEach(cb => subcategorias.push(cb.value));
+
+        const produtoData = {
+            nome, preco, descricao, emPromocao, 
+            imagemURL: urlFinal, categorias, subcategorias, atualizadoEm: new Date()
+        };
+
         const idParaEditar = editIdInput.value;
         if (idParaEditar) {
             await updateDoc(doc(db, "produtos", idParaEditar), produtoData);
@@ -193,9 +212,12 @@ form.addEventListener("submit", async (e) => {
             alert("Produto cadastrado!");
             form.reset();
             limparCheckboxes();
+            urlImagemSalva.value = "";
+            previewImagem.style.display = "none";
         }
     } catch (error) {
-        alert("Erro ao salvar: " + error.message);
+        console.error(error);
+        alert("Erro: " + error.message);
     } finally {
         btnSalvar.textContent = btnOriginalText;
         btnSalvar.disabled = false;
@@ -207,7 +229,7 @@ async function deletarProduto(id) {
         try {
             await deleteDoc(doc(db, "produtos", id));
         } catch (error) {
-            alert("Erro ao excluir: " + error.message);
+            alert("Erro: " + error.message);
         }
     }
 }
@@ -221,8 +243,15 @@ async function prepararEdicao(id) {
         document.getElementById("nomeProduto").value = data.nome;
         document.getElementById("preco").value = data.preco;
         document.getElementById("descricao").value = data.descricao || "";
-        document.getElementById("imagemURL").value = data.imagemURL || "";
         document.getElementById("emPromocao").checked = (data.emPromocao === true || data.emPromocao === "true");
+        
+        urlImagemSalva.value = data.imagemURL || "";
+        if (data.imagemURL) {
+            previewImagem.src = data.imagemURL;
+            previewImagem.style.display = "block";
+        } else {
+            previewImagem.style.display = "none";
+        }
         
         limparCheckboxes();
 
@@ -248,6 +277,9 @@ function cancelarEdicao() {
     editIdInput.value = "";
     form.reset();
     limparCheckboxes();
+    imagemInput.value = "";
+    urlImagemSalva.value = "";
+    previewImagem.style.display = "none";
     btnSalvar.textContent = "Salvar Produto";
     btnSalvar.style.backgroundColor = "#0c3d15";
     btnCancelar.style.display = "none";
