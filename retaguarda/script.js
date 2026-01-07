@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-// configuraçao do Firebase ---------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyBg-TYQ9hQ_l_tDAMjOkmWn-WZhtNpa_oE",
   authDomain: "site-fgv.firebaseapp.com",
@@ -14,47 +14,247 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("Cadastros");
+// --- Dados ---
+const dadosCategorias = {
+    "Bobina": ["Bobina Térmica", "Bobina Plástica", "Bobina Oferta"],
+    "Etiqueta": ["Etiqueta De Balança", "Personalizada", "Neutra", "Mx", "Gôndola", "Etiquetadora", "Etiqueta De Impressora", "Couché", "Etiqueta E Rótulo Personalizado"],
+    "Senha": [],
+    "Embalagem": ["Saco De Lixo"],
+    "Sacola": ["Branca Milheiro", "Verde Fardo"],
+    "Calçado": [],
+    "Uniforme": ["Touca", "Bandana", "Boné", "Luva", "Jaleco", "Avental", "Japona", "Bata", "Calça", "Camiseta", "Moletom"],
+    "Uniforme Personalizado": [],
+    "Cartaz": ["Oferta", "Amarelo Liso", "Padaria", "Feira", "Carne", "Splash", "Impressora", "Diverso", "Outro (Canetão, Kit Metiq, Tinta)"],
+    "Suprimento Para Açougue": ["Faca", "Chaira", "Pedra", "Suporte Para Pedra"],
+    "Relógio Ponto": []
+};
 
-  form.addEventListener("submit", async (e) => {
+// Elementos
+const form = document.getElementById("formCadastro");
+const tabelaBody = document.querySelector("#tabelaProdutos tbody");
+const editIdInput = document.getElementById("editId");
+const btnSalvar = document.getElementById("btnSalvar");
+const btnCancelar = document.getElementById("btnCancelar");
+const containerCheckboxes = document.getElementById("container-checkboxes");
+
+const telaLogin = document.getElementById("tela-login");
+const conteudoRestrito = document.getElementById("conteudo-restrito");
+const btnEntrar = document.getElementById("btnEntrar");
+const btnSair = document.getElementById("btnSair");
+const loginEmail = document.getElementById("loginEmail");
+const loginSenha = document.getElementById("loginSenha");
+
+// --- Login ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        telaLogin.style.display = "none";
+        conteudoRestrito.style.display = "block";
+        gerarFormularioCategorias();
+        carregarProdutos();
+    } else {
+        telaLogin.style.display = "flex";
+        conteudoRestrito.style.display = "none";
+    }
+});
+
+btnEntrar.addEventListener("click", () => {
+    const email = loginEmail.value;
+    const senha = loginSenha.value;
+    btnEntrar.innerText = "Entrando...";
+    
+    signInWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+            loginEmail.value = "";
+            loginSenha.value = "";
+            btnEntrar.innerText = "Entrar no Sistema";
+        })
+        .catch((error) => {
+            alert("Erro ao entrar: " + error.message);
+            btnEntrar.innerText = "Entrar no Sistema";
+        });
+});
+
+btnSair.addEventListener("click", () => {
+    signOut(auth).then(() => window.location.reload());
+});
+
+// --- Gestao ---
+function gerarFormularioCategorias() {
+    containerCheckboxes.innerHTML = "";
+    Object.keys(dadosCategorias).forEach(cat => {
+        const grupo = document.createElement("div");
+        grupo.className = "grupo-categoria";
+        grupo.innerHTML = `
+            <div class="cabecalho-categoria">
+                <input type="checkbox" id="cat-${cat}" class="cat-check" value="${cat}">
+                <label for="cat-${cat}">${cat}</label>
+            </div>
+        `;
+        
+        const subs = dadosCategorias[cat];
+        if (subs.length > 0) {
+            const listaSubs = document.createElement("div");
+            listaSubs.className = "lista-subcategorias";
+            subs.forEach(sub => {
+                const idSub = `sub-${sub.replace(/[^a-zA-Z0-9]/g, '')}`; 
+                listaSubs.innerHTML += `
+                    <div class="item-sub">
+                        <input type="checkbox" id="${idSub}" class="sub-check" value="${sub}">
+                        <label for="${idSub}">${sub}</label>
+                    </div>
+                `;
+            });
+            grupo.appendChild(listaSubs);
+        }
+        containerCheckboxes.appendChild(grupo);
+    });
+}
+
+function carregarProdutos() {
+    if (!auth.currentUser) return;
+
+    onSnapshot(collection(db, "produtos"), (snapshot) => {
+        tabelaBody.innerHTML = "";
+        const produtos = [];
+        snapshot.forEach((doc) => produtos.push({ ...doc.data(), id: doc.id }));
+        
+        // ordena para mostrar os últimos cadastrados primeiro
+        produtos.reverse();
+
+        produtos.forEach((produto) => {
+            const tr = document.createElement("tr");
+            const isPromo = (produto.emPromocao === true || produto.emPromocao === "true");
+            const textoPromo = isPromo 
+                ? '<span style="color:white; background:red; padding:3px 8px; border-radius:10px; font-size:12px; font-weight:bold;">SIM</span>' 
+                : '<span style="color:#aaa;">Não</span>';
+
+            const preco = parseFloat(produto.preco).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            const catsDisplay = [...(produto.categorias || []), ...(produto.subcategorias || [])].join(", ");
+
+            tr.innerHTML = `
+                <td><strong>${produto.nome}</strong></td>
+                <td>${preco}</td>
+                <td><small>${catsDisplay}</small></td>
+                <td style="text-align:center;">${textoPromo}</td>
+                <td>
+                    <button class="btn-action btn-edit" data-id="${produto.id}">Editar</button>
+                    <button class="btn-action btn-delete" data-id="${produto.id}">Excluir</button>
+                </td>
+            `;
+            tabelaBody.appendChild(tr);
+        });
+
+        document.querySelectorAll(".btn-edit").forEach(btn => 
+            btn.addEventListener("click", (e) => prepararEdicao(e.target.dataset.id))
+        );
+        document.querySelectorAll(".btn-delete").forEach(btn => 
+            btn.addEventListener("click", (e) => deletarProduto(e.target.dataset.id))
+        );
+    });
+}
+
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!auth.currentUser) return;
+
+    // evitar clique duplo
+    const btnOriginalText = btnSalvar.textContent;
+    btnSalvar.textContent = "Salvando...";
+    btnSalvar.disabled = true;
 
     const nome = document.getElementById("nomeProduto").value;
     const preco = parseFloat(document.getElementById("preco").value);
-    if (isNaN(preco)) {
-      alert("Preço digitado com formato inválido!")
-      return
-    }
-
     const descricao = document.getElementById("descricao").value;
     const imagemURL = document.getElementById("imagemURL").value;
+    const emPromocao = document.getElementById("emPromocao").checked;
+    
     const categorias = [];
-    ["suprimentos", "equipamento", "etiquetas"].forEach(id => {
-      const checkbox = document.getElementById(id);
-      if (checkbox.checked) categorias.push(checkbox.value);
-    });
+    document.querySelectorAll(".cat-check:checked").forEach(cb => categorias.push(cb.value));
+    
     const subcategorias = [];
-    ["mercado", "padaria", "restaurante", "conveniencia", "acougue", "verdureira"].forEach(id => {
-      const checkbox = document.getElementById(id);
-      if (checkbox.checked) subcategorias.push(checkbox.value);
-    });
-    try {
-      await addDoc(collection(db, "produtos"), {
-      nome,
-      preco,
-      descricao,
-      categorias,
-      subcategorias,
-      imagemURL,
-      criadoEm: new Date()
-    });
+    document.querySelectorAll(".sub-check:checked").forEach(cb => subcategorias.push(cb.value));
 
-    alert("Produto cadastrado com sucesso!");
-    form.reset();
+    const produtoData = {
+        nome, preco, descricao, imagemURL, emPromocao, 
+        categorias, subcategorias, atualizadoEm: new Date()
+    };
+
+    try {
+        const idParaEditar = editIdInput.value;
+        if (idParaEditar) {
+            await updateDoc(doc(db, "produtos", idParaEditar), produtoData);
+            alert("Produto atualizado!");
+            cancelarEdicao();
+        } else {
+            produtoData.criadoEm = new Date();
+            await addDoc(collection(db, "produtos"), produtoData);
+            alert("Produto cadastrado!");
+            form.reset();
+            limparCheckboxes();
+        }
     } catch (error) {
-      alert("Erro ao cadastrar produto.");
+        alert("Erro ao salvar: " + error.message);
+    } finally {
+        btnSalvar.textContent = btnOriginalText;
+        btnSalvar.disabled = false;
     }
-  });
 });
+
+async function deletarProduto(id) {
+    if (confirm("Tem certeza?")) {
+        try {
+            await deleteDoc(doc(db, "produtos", id));
+        } catch (error) {
+            alert("Erro ao excluir: " + error.message);
+        }
+    }
+}
+
+async function prepararEdicao(id) {
+    const { getDoc } = await import("https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js");
+    const docSnap = await getDoc(doc(db, "produtos", id));
+    
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("nomeProduto").value = data.nome;
+        document.getElementById("preco").value = data.preco;
+        document.getElementById("descricao").value = data.descricao || "";
+        document.getElementById("imagemURL").value = data.imagemURL || "";
+        document.getElementById("emPromocao").checked = (data.emPromocao === true || data.emPromocao === "true");
+        
+        limparCheckboxes();
+
+        if (data.categorias) data.categorias.forEach(val => {
+            const el = document.querySelector(`.cat-check[value="${val}"]`);
+            if (el) el.checked = true;
+        });
+        
+        if (data.subcategorias) data.subcategorias.forEach(val => {
+            const el = document.querySelector(`.sub-check[value="${val}"]`);
+            if (el) el.checked = true;
+        });
+
+        editIdInput.value = id;
+        btnSalvar.textContent = "Atualizar Produto";
+        btnSalvar.style.backgroundColor = "#eab308";
+        btnCancelar.style.display = "inline-block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function cancelarEdicao() {
+    editIdInput.value = "";
+    form.reset();
+    limparCheckboxes();
+    btnSalvar.textContent = "Salvar Produto";
+    btnSalvar.style.backgroundColor = "#0c3d15";
+    btnCancelar.style.display = "none";
+}
+
+function limparCheckboxes() {
+    document.querySelectorAll('.cat-check, .sub-check').forEach(cb => cb.checked = false);
+}
+
+btnCancelar.addEventListener("click", cancelarEdicao);
