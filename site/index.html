@@ -27,7 +27,7 @@
             </div>
 
             <div class="hidden md:flex items-center space-x-6 text-sm ml-3">
-                <a href="#" class="hover:text-green-200 transition">Meus pedidos</a>
+                <a href="#" onclick="abrirStatusPedido(); return false;" class="hover:text-green-200 transition">Meus pedidos</a>
             </div>
 
             <div class="w-full md:flex-1 md:mx-4">
@@ -58,7 +58,7 @@
                 </button>
 
                 <div id="navbar-categorias" class="flex items-center overflow-x-auto scrollbar-hide h-full space-x-0 mx-4 md:mx-10">
-                    </div>
+                </div>
 
                 <button id="nav-scroll-right" class="absolute right-0 top-0 bottom-0 w-10 bg-white hover:bg-gray-100 flex items-center justify-center z-10 text-gray-600 hidden md:flex cursor-pointer border-l border-gray-100">
                     <i class="fas fa-chevron-right"></i>
@@ -78,7 +78,7 @@
                 </button>
 
                 <div id="carousel-categorias" class="flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth py-4 px-1">
-                    </div>
+                </div>
 
                 <button id="carousel-scroll-right" class="absolute right-0 top-1/2 mt-4 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg z-10 hover:bg-white text-gray-700 hidden md:block hover:scale-110 transition">
                     <i class="fas fa-chevron-right"></i>
@@ -109,17 +109,24 @@
                         <h3 id="titulo-sidebar" class="font-bold text-xl mb-4 text-green-800 uppercase border-b pb-2">Categoria</h3>
                         <h4 class="font-semibold text-sm text-gray-500 mb-3 uppercase mt-4">Filtrar por:</h4>
                         <div id="lista-subcategorias" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                            </div>
+                        </div>
                     </div>
                 </aside>
 
                 <div class="flex-1">
+                    <div id="container-promocoes" class="hidden mb-8 border-b border-gray-200 pb-8">
+                        <h2 class="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-fire"></i> Ofertas nesta Categoria
+                        </h2>
+                        <div id="lista-promocoes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            </div>
+                    </div>
                     <div class="flex justify-between items-center mb-6">
                         <h2 id="titulo-secao-produtos" class="text-2xl font-bold text-gray-800">Produtos</h2>
                         <span id="contador-produtos" class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Carregando...</span>
                     </div>
                     <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
