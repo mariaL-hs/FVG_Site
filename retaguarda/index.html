@@ -1,62 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FVG Retaguarda</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script type="module" src="script.js"></script>
 </head>
-
 <body>
-  <h2 id="TituloCadastro">Cadastro de Produtos</h2>
-  <form name="Cadastros" id="Cadastros">
-    <label for="nomeProduto">Nome:* </label>
-    <input type="text" id="nomeProduto" name="nomeProduto" required placeholder="Digite o nome do produto"><br>
-    <label for="preco">Preço:* </label>
-    <input type="text" id="preco" name="preco" required placeholder="Utilize o formato '00.00' somente"><br>
-    <label for="descricao">Descrição: </label>
-    <input type="text" id="descricao" name="descricao" placeholder="Digite a descrição do produto">
-    <h5>[Campos com * precisam ser preenchidos obrigatoriamente]</h5>
-  
-    <h3>Categorias</h3>
-    <input type="checkbox" id="suprimentos" name="suprimentos" value="suprimentos">
-    <label for="suprimentos">Suprimentos</label><br>
-    <input type="checkbox" id="equipamento" name="equipamento" value="equipamento">
-    <label for="equipamento">Equipamentos</label><br>
-    <input type="checkbox" id="etiquetas" name="etiquetas" value="etiquetas">
-    <label for="etiquetas">Etiquetas</label><br>
-    <input type="checkbox" id="bobinas" name="bobinas" value="bobinas">
-    <label for="bobinas">Bobinas</label><br>
-    <input type="checkbox" id="seladoras" name="seladoras" value="seladoras">
-    <label for="seladoras">Seladoras à vácuo</label><br>
-    <h3>Subcategorias</h3>
-    <input type="checkbox" id="mercado" name="mercado" value="mercado">
-    <label for="mercado">Mercados/Supermecados</label><br>
-    <input type="checkbox" id="padaria" name="padaria" value="padaria">
-    <label for="padaria">Padarias/Cafeterias</label><br>
-    <input type="checkbox" id="restaurante" name="restaurante" value="restaurante">
-    <label for="restaurante">Restaurantes</label><br>
-    <input type="checkbox" id="conveniencia" name="conveniencia" value="conveniencia">
-    <label for="conveniencia">Conveniências</label><br>
-    <input type="checkbox" id="acougue" name="acougue" value="acougue">
-    <label for="acougue">Açougues/Casa de carnes</label><br>
-    <input type="checkbox" id="verdureira" name="verdureira" value="verdureira">
-    <label for="verdureira">Verdureiras</label><br>
-    <input type="checkbox" id="lanchonete" name="lanchonete" value="lanchonete">
-    <label for="lanchonete">Lanchonetes/Bares</label><br>
-    <input type="checkbox" id="cozinha" name="cozinha" value="cozinha">
-    <label for="cozinha">Cozinhas industriais</label><br>
 
-    <label for="imagemURL">Link da imagem (Google Drive):</label>
-    <input type="text" id="imagemURL" name="imagemURL" placeholder="Cole o link aqui"><br>
+  <!-- TELA DE LOGIN -->
+  <div id="tela-login">
+    <div class="login-box">
+      <h2>🔐 Retaguarda FVG</h2>
+      <input type="text" id="loginEmail" placeholder="Email administrativo">
+      <input type="password" id="loginSenha" placeholder="Senha">
+      <button id="btnEntrar">Entrar no Sistema</button>
+    </div>
+  </div>
 
-    <button type="submit">Salvar</button><br>
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div id="conteudo-restrito" style="display:none;">
 
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo">FVG</div>
+        <div class="brand-text">
+          <strong>Retaguarda</strong>
+          <small>Gestão de Produtos</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="cadastro">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Cadastrar Produto
+        </button>
+        <button class="nav-item" data-page="produtos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Gestão de Produtos
+        </button>
+      </nav>
+      <button id="btnSair" class="btn-logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sair
+      </button>
+    </aside>
 
-  </form>
+    <!-- CONTEÚDO -->
+    <main class="main-content">
+
+      <!-- TOAST -->
+      <div id="toast" class="toast"></div>
+
+      <!-- ===================== PÁGINA: CADASTRO ===================== -->
+      <div id="page-cadastro" class="page active">
+        <div class="page-header">
+          <div>
+            <h1 id="titulo-formulario">Novo Produto</h1>
+            <p id="subtitulo-formulario">Preencha os dados para cadastrar um novo produto</p>
+          </div>
+          <div id="header-actions-edicao" style="display:none; gap:12px; align-items:center;">
+            <button id="btnCancelarEdicao" class="btn-secondary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Cancelar Edição
+            </button>
+          </div>
+        </div>
+
+        <form id="formCadastro">
+          <input type="hidden" id="editId">
+
+          <div class="form-grid">
+            <!-- Coluna principal -->
+            <div class="form-col-main">
+
+              <div class="form-section">
+                <h3 class="section-title">Informações Básicas</h3>
+                <div class="field-group">
+                  <label for="nomeProduto">Nome do Produto <span class="required">*</span></label>
+                  <input type="text" id="nomeProduto" required placeholder="Ex: Bobina Térmica 80x40">
+                </div>
+                <div class="field-row">
+                  <div class="field-group">
+                    <label for="preco">Preço (R$) <span class="required">*</span></label>
+                    <input type="number" id="preco" required step="0.01" placeholder="0,00">
+                  </div>
+                  <div class="field-group flex2">
+                    <label for="descricao">Descrição</label>
+                    <input type="text" id="descricao" placeholder="Detalhes adicionais do produto...">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-title">Fotos do Produto</h3>
+                <div class="upload-area" id="uploadArea">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                  <p>Arraste imagens aqui ou <label for="imagemInput" class="link-upload">clique para selecionar</label></p>
+                  <small>Clique em uma imagem para definir como capa (borda verde)</small>
+                  <input type="file" id="imagemInput" accept="image/*" multiple style="display:none;">
+                </div>
+                <div id="previewContainer" class="preview-grid"></div>
+              </div>
+
+              <!-- Lightbox -->
+              <div id="lightbox" class="lightbox" style="display:none;">
+                <button class="lightbox-close" id="lightboxClose">✕</button>
+                <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+                <img id="lightboxImg" src="" alt="Preview">
+                <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+              </div>
+
+            </div>
+
+            <!-- Coluna lateral -->
+            <div class="form-col-side">
+
+              <div class="form-section">
+                <h3 class="section-title">Status do Produto</h3>
+                <div class="status-card destaque">
+                  <div class="status-card-icon">⭐</div>
+                  <div class="status-card-text">
+                    <strong>Produto Destaque</strong>
+                    <small>Exibirá na seção "Mais Vendidos" do site</small>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" id="produtoDestaque">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="status-card promo">
+                  <div class="status-card-icon">🏷️</div>
+                  <div class="status-card-text">
+                    <strong>Produto em Promoção</strong>
+                    <small>Exibirá na seção "Ofertas" do site</small>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" id="emPromocao">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-title">Categorias</h3>
+                <p class="section-hint">Clique em uma categoria para ver as subcategorias</p>
+                <div id="container-checkboxes" class="categorias-accordion"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="btnSalvar" class="btn-save">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Salvar Produto
+            </button>
+            <button type="button" id="btnAtualizarProduto" class="btn-update" style="display:none;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+              Atualizar Produto
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ===================== PÁGINA: GESTÃO DE PRODUTOS ===================== -->
+      <div id="page-produtos" class="page">
+        <div class="page-header">
+          <div>
+            <h1>Gestão de Produtos</h1>
+            <p>Pesquise, filtre e gerencie seus produtos cadastrados</p>
+          </div>
+        </div>
+
+        <!-- Barra de pesquisa -->
+        <div class="search-bar-wrapper">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="barraPesquisa" class="search-bar" placeholder="Pesquisar por nome, categoria, subcategoria...">
+          <button id="btnLimparPesquisa" class="btn-clear-search" style="display:none;">✕</button>
+        </div>
+
+        <!-- Visão de produtos -->
+        <div class="visao-section">
+          <h3 class="visao-title">Visão de Produtos</h3>
+          <div class="visao-btns">
+            <div id="visaoCategorias" class="visao-grupo">
+              <span class="visao-label">Por Categoria</span>
+              <div id="btnsCategorias" class="visao-tags"></div>
+            </div>
+            <button class="visao-btn" data-visao="promocao">
+              <span>🏷️</span> Produtos em Promoção
+            </button>
+            <button class="visao-btn" data-visao="destaque">
+              <span>⭐</span> Produtos Destaque
+            </button>
+            <button class="visao-btn" data-visao="todos">
+              <span>📦</span> Todos os Produtos
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabela de produtos -->
+        <div id="tabelaWrapper" class="tabela-wrapper" style="display:none;">
+          <div class="tabela-header-row">
+            <span id="tabelaTitulo" class="tabela-titulo"></span>
+            <button id="btnFecharTabela" class="btn-fechar-tabela">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Fechar
+            </button>
+          </div>
+          <div class="table-scroll">
+            <table id="tabelaProdutos">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Preço</th>
+                  <th>Categorias</th>
+                  <th>Promoção</th>
+                  <th>Destaque</th>
+                  <th class="col-acoes">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaBody"></tbody>
+            </table>
+          </div>
+          <div id="tabelaEmpty" class="tabela-empty" style="display:none;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            <p>Nenhum produto encontrado nesta categoria</p>
+          </div>
+        </div>
+
+        <!-- Resultados de pesquisa -->
+        <div id="resultadosPesquisa" class="tabela-wrapper" style="display:none;">
+          <div class="tabela-header-row">
+            <span class="tabela-titulo">Resultados da pesquisa</span>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Preço</th>
+                  <th>Categorias</th>
+                  <th>Promoção</th>
+                  <th>Destaque</th>
+                  <th class="col-acoes">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="bodyPesquisa"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
 
 </body>
-
 </html>

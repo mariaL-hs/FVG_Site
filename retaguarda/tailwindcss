@@ -1,6 +1,0 @@
-@import "tailwindcss";
-
-
-#TituloCadastro {
-    font-size: 35px;
-}
