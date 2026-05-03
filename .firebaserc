@@ -1,0 +1,16 @@
+{
+  "projects": {},
+  "targets": {
+    "site-fgv": {
+      "hosting": {
+        "loja": [
+          "site-fgv"
+        ],
+        "admin": [
+          "retaguardafvg"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
