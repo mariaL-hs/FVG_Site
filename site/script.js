@@ -212,7 +212,10 @@ function escapeHtml(str) {
 }
 
 function obterImagemCapa(produto, placeholder = "https://placehold.co/400x300?text=Sem+Foto") {
+    if (produto.imagemURL) return produto.imagemURL;
+
     if (!produto.imagens?.length) return placeholder;
+
     const capa = produto.imagens.find(i => i.capa) ?? produto.imagens[0];
     return capa.url;
 }
