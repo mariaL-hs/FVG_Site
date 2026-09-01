@@ -23,15 +23,10 @@ const storage = getStorage(app);
 const dadosCategorias = {
   "Bobinas": ["Bobinas Térmicas", "Bobinas Plásticas", "Bobinas Oferta"],
   "Etiquetas": ["Etiquetas De Balança", "Personalizada", "Neutra", "Mx", "Gôndola", "Etiquetadoras", "Etiquetas De Impressora", "Couché", "Etiquetas E Rótulo Personalizado"],
-  "Senhas": [],
-  "Embalagens": ["Saco De Lixo"],
-  "Sacolas": ["Sacola Branca", "Sacola Verde"],
   "Calçados": [],
   "Uniformes": ["Toucas", "Bandanas", "Bonés", "Luvas", "Jalecos", "Aventais", "Japonas", "Batas", "Calças", "Camisetas", "Moletons"],
   "Uniformes Personalizados": [],
-  "Cartazes": ["Oferta", "Amarelo Liso", "Padaria", "Feira", "Carne", "Splash", "Impressora", "Diverso", "Outro (Canetão, Kit Metiq, Tinta)"],
   "Suprimentos Para Açougue": ["Faca", "Chaira", "Pedra", "Suporte Para Pedra"],
-  "Relógios Ponto": []
 };
 
 // ========================= STATE =========================
